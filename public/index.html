@@ -12,9 +12,39 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Vincius AI GUI</title>
+    <style>
+      /* Estilos críticos para os handles do ReactFlow */
+      .react-flow__handle {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #2ecc71;
+        border: 1px solid white;
+        cursor: crosshair;
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script>
+      // Helper para debug dos handles do ReactFlow
+      window.debugReactFlowHandles = function() {
+        console.log('Checking ReactFlow handles...');
+        const handles = document.querySelectorAll('.react-flow__handle');
+        console.log(`Found ${handles.length} handles`);
+        handles.forEach((handle, i) => {
+          console.log(`Handle ${i}:`, handle);
+          handle.style.backgroundColor = '#ff0000';
+          handle.style.width = '12px';
+          handle.style.height = '12px';
+          handle.style.border = '2px solid white';
+        });
+      }
+      // Executar após carregar
+      window.addEventListener('load', () => {
+        setTimeout(window.debugReactFlowHandles, 2000);
+      });
+    </script>
   </body>
 </html>

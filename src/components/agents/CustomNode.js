@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useState } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { Box, Text } from '@primer/react';
 import NodeHeader from './NodeHeader';
@@ -15,7 +15,16 @@ const getNodeHeaderColor = (nodeType) => {
 };
 
 const CustomNode = ({ data, isConnectable, selected }) => {
+  const [isHovered, setIsHovered] = useState(false);
   const headerColors = getNodeHeaderColor(data.type);
+
+  // Versão simplificada do estilo dos handles para garantir funcionamento básico
+  const baseHandleStyle = {
+    width: 10,
+    height: 10,
+    background: 'var(--color-success-emphasis)',
+    border: '1px solid #fff',
+  };
 
   return (
     <Box
@@ -26,28 +35,22 @@ const CustomNode = ({ data, isConnectable, selected }) => {
         borderWidth: selected ? 2 : 1,
         backgroundColor: 'canvas.default',
         width: 180,
-        overflow: 'hidden',
         fontFamily: 'var(--font-family)',
         boxShadow: selected 
           ? '0 0 0 2px var(--color-accent-muted), 0 4px 8px rgba(0, 0, 0, 0.2)' 
           : '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
-        transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
-        '&:hover': {
-          boxShadow: selected 
-            ? '0 0 0 2px var(--color-accent-muted), 0 6px 10px rgba(0, 0, 0, 0.25)' 
-            : '0 4px 8px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.12)',
-        },
+        position: 'relative',
+        overflow: 'visible',
       }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      data-nodetype={data.type}
     >
-      {/* Target handle on top */}
+      {/* Handle de destino (topo) */}
       <Handle
         type="target"
         position={Position.Top}
-        style={{ 
-          background: 'var(--color-accent-fg)',
-          width: 8,
-          height: 8
-        }}
+        style={baseHandleStyle}
         isConnectable={isConnectable}
       />
       
@@ -74,40 +77,51 @@ const CustomNode = ({ data, isConnectable, selected }) => {
         )}
       </Box>
       
-      {/* Source handle on bottom */}
+      {/* Handle de origem (fundo) */}
       <Handle
         type="source"
         position={Position.Bottom}
-        style={{ 
-          background: 'var(--color-accent-fg)',
-          width: 8,
-          height: 8
-        }}
+        style={baseHandleStyle}
         isConnectable={isConnectable}
       />
       
-      {/* Additional handles on sides for more connection options */}
+      {/* Handles laterais (simplificados) */}
       <Handle
         type="source"
         position={Position.Right}
-        style={{ 
-          background: 'var(--color-success-fg)',
-          width: 8,
-          height: 8
-        }}
+        style={baseHandleStyle}
         isConnectable={isConnectable}
       />
       
       <Handle
         type="target"
         position={Position.Left}
-        style={{ 
-          background: 'var(--color-success-fg)',
-          width: 8,
-          height: 8
-        }}
+        style={baseHandleStyle}
         isConnectable={isConnectable}
       />
+      
+      {/* Indicador do tipo de nó */}
+      {(isHovered || selected) && (
+        <Box sx={{
+          position: 'absolute',
+          top: '-8px',
+          right: '-8px',
+          width: '16px',
+          height: '16px',
+          background: data.type === 'agent' ? 'var(--color-accent-emphasis)' : 'var(--color-success-emphasis)',
+          borderRadius: '50%',
+          border: '1px solid white',
+          zIndex: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontSize: '9px',
+          color: 'white',
+          fontWeight: 'bold',
+        }}>
+          {data.type === 'agent' ? 'A' : 'C'}
+        </Box>
+      )}
     </Box>
   );
 };

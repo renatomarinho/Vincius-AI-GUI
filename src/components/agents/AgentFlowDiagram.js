@@ -4,7 +4,6 @@ import {
   Background,
   Panel,
   addEdge,
-  ConnectionLineType,
   useNodesState,
   useEdgesState,
   Controls,
@@ -12,7 +11,7 @@ import {
   useReactFlow,
 } from '@xyflow/react';
 import dagre from '@dagrejs/dagre';
-import { Button, Box, ButtonGroup, ActionList, ActionMenu } from '@primer/react';
+import { Button, Box, ButtonGroup, ActionList, ActionMenu, Text } from '@primer/react';
 import { 
   BeakerIcon, 
   CodeIcon, 
@@ -118,6 +117,8 @@ const FlowWithProvider = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [connectionStartNodeId, setConnectionStartNodeId] = useState(null);
 
   // Inicializar o diagrama com layout predefinido quando o componente montar
   useEffect(() => {
@@ -133,14 +134,72 @@ const FlowWithProvider = () => {
     }
   }, [setNodes, setEdges, isLoaded]);
  
+  const onConnectStart = useCallback((event, { nodeId, handleId, handleType }) => {
+    console.log('Connection start:', { nodeId, handleId, handleType });
+    setIsConnecting(true);
+    setConnectionStartNodeId(nodeId);
+    document.body.classList.add('connecting');
+    
+    // Adicionar classe especial ao nó de origem e aos potenciais alvos
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          // Node de origem
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              isConnectionSource: true,
+            },
+          };
+        } else {
+          // Potenciais alvos
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              isConnectionTarget: true,
+            },
+          };
+        }
+      })
+    );
+  }, [setNodes]);
+
+  const onConnectEnd = useCallback((event) => {
+    console.log('Connection end', event);
+    setIsConnecting(false);
+    setConnectionStartNodeId(null);
+    document.body.classList.remove('connecting');
+    
+    // Resetar estados de conexão
+    setNodes((nds) =>
+      nds.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          isConnectionSource: false,
+          isConnectionTarget: false,
+        },
+      }))
+    );
+  }, [setNodes]);
+
   const onConnect = useCallback(
     (params) => {
-      console.log('Connection created:', params);
-      setEdges((eds) =>
-        addEdge(
-          { ...params, type: ConnectionLineType.SmoothStep, animated: true },
-          eds,
-        ),
+      console.log('Connection established with params:', params);
+      
+      // Adicionar conexão com parâmetros básicos para garantir funcionamento
+      setEdges((eds) => 
+        addEdge({
+          ...params,
+          type: 'smoothstep',
+          animated: true,
+          style: {
+            stroke: '#2ecc71',
+            strokeWidth: 2,
+          },
+        }, eds)
       );
     },
     [setEdges],
@@ -261,10 +320,13 @@ const FlowWithProvider = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onConnectStart={onConnectStart}
+        onConnectEnd={onConnectEnd}
         nodeTypes={nodeTypes}
-        connectionLineType={ConnectionLineType.SmoothStep}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
+        defaultEdgeOptions={{
+          type: 'smoothstep',
+          animated: true,
+        }}
         fitView
         style={{ backgroundColor: "var(--color-canvas-subtle)" }}
         minZoom={0.2}
@@ -308,6 +370,25 @@ const FlowWithProvider = () => {
         <Controls />
         <Background gap={16} size={1} />
       </ReactFlow>
+      
+      {isConnecting && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '10px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: 'success.emphasis',
+            color: 'white',
+            padding: '8px 16px',
+            borderRadius: '4px',
+            zIndex: 1000,
+            boxShadow: '0 3px 8px rgba(0,0,0,0.3)',
+          }}
+        >
+          <Text sx={{ fontSize: 1, color: 'white' }}>Connecting... Drag to connect nodes</Text>
+        </Box>
+      )}
     </div>
   );
 };
