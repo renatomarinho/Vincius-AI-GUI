@@ -1,0 +1,40 @@
+/* Extremely forceful styles for the right sidebar */
+.right-sidebar {
+  position: fixed !important;
+  top: 0 !important;
+  right: -350px !important; /* Default position: off-screen */
+  width: 350px !important;
+  height: 100% !important;
+  background-color: white !important;
+  box-shadow: -3px 0 15px rgba(0, 0, 0, 0.3) !important;
+  z-index: 10000 !important; /* Extremely high z-index */
+  transition: right 0.3s ease !important;
+  border: 3px solid red !important; /* Very visible border for debugging */
+}
+
+/* When open, force it to be visible and on-screen */
+.right-sidebar.open {
+  right: 0 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Apply the style to all major browser engines */
+@-webkit-keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.right-sidebar.open {
+  -webkit-animation: fadeIn 0.5s ease-in-out !important;
+  animation: fadeIn 0.5s ease-in-out !important;
+}
+
+/* Ensure header is always visible */
+.right-sidebar header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 1;
+  padding: 16px;
+  border-bottom: 1px solid #e1e4e8;
+}

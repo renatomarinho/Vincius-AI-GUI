@@ -1,0 +1,21 @@
+/* Forced styles to make sure the sidebar appears correctly */
+.agent-config-sidebar {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 320px !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  background-color: white !important;
+  box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2) !important;
+  display: block !important;
+  border: 2px solid red !important; /* For debugging */
+}
+
+/* Ensure any global styles don't interfere */
+body .agent-config-sidebar {
+  position: fixed !important;
+  right: 0 !important;
+  z-index: 9999 !important;
+  display: block !important;
+}
