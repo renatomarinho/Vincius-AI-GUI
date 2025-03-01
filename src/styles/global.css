@@ -1,0 +1,287 @@
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --text-color: #333;
+  --bg-color: #fff;
+  --error-color: #e74c3c;
+  --success-color: #27ae60;
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body.dark {
+  --text-color: #f5f5f5;
+  --bg-color: #121212;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Estilos básicos que não são cobertos pelo Primer */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+}
+
+.content {
+  flex: 1;
+  padding: 16px;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Header Styles */
+.app-header {
+  background-color: var(--bg-color);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 1rem 2rem;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Logo Styles */
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+/* Navigation Styles */
+.main-navigation .nav-links {
+  display: flex;
+  list-style: none;
+}
+
+.main-navigation .nav-links li {
+  margin-left: 1.5rem;
+}
+
+/* Sidebar Styles */
+.app-sidebar {
+  width: 250px;
+  background-color: var(--bg-color);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+}
+
+.sidebar-toggle {
+  display: none;
+}
+
+.sidebar-menu {
+  list-style: none;
+  margin-top: 1rem;
+}
+
+.sidebar-menu li {
+  margin-bottom: 0.75rem;
+}
+
+/* Footer Styles */
+.app-footer {
+  background-color: var(--bg-color);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section {
+  flex: 1;
+  margin-right: 2rem;
+}
+
+.footer-section h3 {
+  margin-bottom: 1rem;
+}
+
+.footer-section ul {
+  list-style: none;
+}
+
+.footer-section li {
+  margin-bottom: 0.5rem;
+}
+
+.copyright {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Hero Section Styles */
+.hero-section {
+  display: flex;
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-content {
+  flex: 1;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  margin: 1rem 0;
+}
+
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.placeholder-image {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 5rem;
+  border-radius: 8px;
+}
+
+/* Feature Section Styles */
+.features-section {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  padding: 2rem;
+  border-radius: 8px;
+  background-color: var(--bg-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-title {
+  margin-bottom: 1rem;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+  }
+  
+  .hero-section {
+    flex-direction: column;
+  }
+  
+  .footer-container {
+    flex-direction: column;
+  }
+  
+  .footer-section {
+    margin-bottom: 2rem;
+  }
+  
+  .app-sidebar {
+    position: fixed;
+    left: -250px;
+    height: 100vh;
+    transition: left 0.3s ease;
+    z-index: 100;
+  }
+  
+  .app-sidebar.open {
+    left: 0;
+  }
+  
+  .sidebar-toggle {
+    display: block;
+    position: absolute;
+    right: -40px;
+    top: 10px;
+  }
+}
