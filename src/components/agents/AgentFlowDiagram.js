@@ -9,6 +9,7 @@ import {
   Controls,
   ReactFlowProvider,
   useReactFlow,
+  MarkerType,
 } from '@xyflow/react';
 import dagre from '@dagrejs/dagre';
 import { Button, Box, ButtonGroup, ActionList, ActionMenu, Text } from '@primer/react';
@@ -27,28 +28,26 @@ import { initialNodes, initialEdges } from './initialElements';
 import CustomNode from './CustomNode';
 import ApiIcon from './ApiIcon';
 
-// Map item IDs to their corresponding icons
+// Ícones para os diferentes tipos de nós
+const iconMap = {
+  'beaker': <BeakerIcon size={16} />,
+  'code': <CodeIcon size={16} />,
+  'checklist': <ChecklistIcon size={16} />,
+  'comment-discussion': <CommentDiscussionIcon size={16} />,
+  'api': <ApiIcon size={16} />
+};
+
+// Função auxiliar para obter ícone pelo tipo
 const getIconForType = (iconType) => {
-  console.log('Getting icon for type:', iconType);
-  
-  // Map de ícones para garantir mapeamento correto
-  const iconMap = {
-    'beaker': <BeakerIcon size={16} />,
-    'code': <CodeIcon size={16} />,
-    'checklist': <ChecklistIcon size={16} />,
-    'comment-discussion': <CommentDiscussionIcon size={16} />,
-    'api': <ApiIcon size={16} />
-  };
-  
   return iconMap[iconType] || <div>•</div>;
 };
 
-// Define custom node types
+// Tipos de nós personalizados
 const nodeTypes = {
   customNode: CustomNode,
 };
 
-// Sample nodes para adicionar diretamente
+// Agents disponíveis para adicionar
 const sampleAgents = [
   {
     id: 'analyst',
@@ -79,6 +78,8 @@ const nodeHeight = 100;
 const dagreGraph = new dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
 const getLayoutedElements = (nodes, edges, direction = 'TB') => {
+  if (!nodes.length) return { nodes: [], edges };
+  
   const isHorizontal = direction === 'LR';
   dagreGraph.setGraph({ rankdir: direction });
  
@@ -94,7 +95,12 @@ const getLayoutedElements = (nodes, edges, direction = 'TB') => {
  
   const newNodes = nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
-    const newNode = {
+    
+    if (!nodeWithPosition) {
+      return node;
+    }
+    
+    return {
       ...node,
       targetPosition: isHorizontal ? 'left' : 'top',
       sourcePosition: isHorizontal ? 'right' : 'bottom',
@@ -103,24 +109,20 @@ const getLayoutedElements = (nodes, edges, direction = 'TB') => {
         y: nodeWithPosition.y - nodeHeight / 2,
       },
     };
- 
-    return newNode;
   });
  
   return { nodes: newNodes, edges };
 };
 
-// Flow component with useReactFlow hook
+// Flow component com hook useReactFlow
 const FlowWithProvider = () => {
   const reactFlowWrapper = useRef(null);
-  const reactFlow = useReactFlow();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [connectionStartNodeId, setConnectionStartNodeId] = useState(null);
 
-  // Inicializar o diagrama com layout predefinido quando o componente montar
+  // Inicializar o diagrama com o layout
   useEffect(() => {
     if (initialNodes.length > 0 && !isLoaded) {
       const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
@@ -133,183 +135,110 @@ const FlowWithProvider = () => {
       setIsLoaded(true);
     }
   }, [setNodes, setEdges, isLoaded]);
- 
-  const onConnectStart = useCallback((event, { nodeId, handleId, handleType }) => {
-    console.log('Connection start:', { nodeId, handleId, handleType });
+
+  // SOLUÇÃO PARA LINHAS DE CONEXÃO: Configuração mais simples possível
+  const onConnect = useCallback((params) => {
+    // Apenas adicione a conexão da forma mais simples possível
+    setEdges((eds) => addEdge(params, eds));
+  }, [setEdges]);
+
+  const onConnectStart = useCallback(() => {
     setIsConnecting(true);
-    setConnectionStartNodeId(nodeId);
-    document.body.classList.add('connecting');
-    
-    // Adicionar classe especial ao nó de origem e aos potenciais alvos
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (node.id === nodeId) {
-          // Node de origem
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              isConnectionSource: true,
-            },
-          };
-        } else {
-          // Potenciais alvos
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              isConnectionTarget: true,
-            },
-          };
-        }
-      })
-    );
-  }, [setNodes]);
+  }, []);
 
-  const onConnectEnd = useCallback((event) => {
-    console.log('Connection end', event);
+  const onConnectEnd = useCallback(() => {
     setIsConnecting(false);
-    setConnectionStartNodeId(null);
-    document.body.classList.remove('connecting');
+  }, []);
+
+  // Reorganizar o layout dos elementos
+  const onLayout = useCallback((direction) => {
+    if (!nodes.length) return;
     
-    // Resetar estados de conexão
-    setNodes((nds) =>
-      nds.map((node) => ({
-        ...node,
-        data: {
-          ...node.data,
-          isConnectionSource: false,
-          isConnectionTarget: false,
-        },
-      }))
+    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
+      nodes, 
+      edges, 
+      direction
     );
-  }, [setNodes]);
 
-  const onConnect = useCallback(
-    (params) => {
-      console.log('Connection established with params:', params);
-      
-      // Adicionar conexão com parâmetros básicos para garantir funcionamento
-      setEdges((eds) => 
-        addEdge({
-          ...params,
-          type: 'smoothstep',
-          animated: true,
-          style: {
-            stroke: '#2ecc71',
-            strokeWidth: 2,
-          },
-        }, eds)
-      );
-    },
-    [setEdges],
-  );
+    setNodes([...layoutedNodes]);
+    setEdges([...layoutedEdges]);
+  }, [nodes, edges, setNodes, setEdges]);
 
-  const onLayout = useCallback(
-    (direction) => {
-      if (nodes.length === 0) return;
-      
-      const { nodes: layoutedNodes, edges: layoutedEdges } =
-        getLayoutedElements(nodes, edges, direction);
- 
-      setNodes([...layoutedNodes]);
-      setEdges([...layoutedEdges]);
-    },
-    [nodes, edges, setNodes, setEdges],
-  );
-
+  // Handle drag & drop para adicionar novos nós
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  // Adicionar novo nó manualmente pelo menu - CORRIGIDO
   const addNewNode = useCallback((agentData) => {
-    // Using the viewport center with some offset for position
-    const { x, y, zoom } = reactFlow.getViewport();
-    
-    const width = reactFlowWrapper.current.offsetWidth || 1000;
-    const height = reactFlowWrapper.current.offsetHeight || 800;
-    
-    // Calculate a position relative to the viewport center
-    const position = reactFlow.screenToFlowPosition({
-      x: width / 2 + Math.random() * 100 - 50,
-      y: height / 2 + Math.random() * 100 - 50,
-    });
-    
-    console.log('Adding node at position:', position);
-    
-    const icon = getIconForType(agentData.iconType);
-    
+    // Usar coordenadas absolutas em vez de tentar transformar
+    // Como estamos adicionando um nó via botão, podemos usar posição fixa
+    const position = {
+      x: 100 + Math.random() * 200, 
+      y: 100 + Math.random() * 200
+    };
+
+    console.log('Adding new node at position:', position);
+
     const newNode = {
       id: `${agentData.id}-${Date.now()}`,
       type: 'customNode',
-      position,
+      position: position,
       data: {
         label: agentData.label,
         description: agentData.description,
-        icon: icon,
+        icon: getIconForType(agentData.iconType),
         type: agentData.type,
       },
     };
 
-    console.log('Adding new node:', newNode);
-    setNodes((nds) => nds.concat(newNode));
-  }, [reactFlow, setNodes]);
+    // Usar uma função que não depende de ReactFlow
+    setNodes((nds) => [...nds, newNode]);
+  }, [setNodes]); // Remover dependência do reactFlow
 
-  const onDrop = useCallback(
-    (event) => {
-      event.preventDefault();
-      console.log('Drop event triggered');
+  // Drag & drop para adicionar novos nós - CORRIGIDO
+  const onDrop = useCallback((event) => {
+    event.preventDefault();
 
-      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const draggedData = event.dataTransfer.getData('application/reactflow');
+    const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+    const draggedData = event.dataTransfer.getData('application/reactflow');
+    
+    if (!draggedData) return;
+
+    try {
+      const parsedData = JSON.parse(draggedData);
+
+      // Calcular posição baseada na posição do mouse
+      const position = {
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top
+      };
       
-      // Check if we have valid data
-      if (!draggedData || typeof draggedData !== 'string') {
-        console.log('No valid drag data found');
-        return;
-      }
+      console.log('Dropping node at position:', position);
 
-      try {
-        const parsedData = JSON.parse(draggedData);
-        console.log('Parsed drag data:', parsedData);
+      const newNode = {
+        id: `node-${Date.now()}`,
+        type: 'customNode',
+        position,
+        data: { 
+          label: parsedData.label || 'New Node',
+          description: parsedData.description || '',
+          icon: getIconForType(parsedData.iconType || 'api'),
+          type: parsedData.nodeType || 'custom',
+        },
+      };
 
-        // Get the position where the element was dropped
-        const position = reactFlow.screenToFlowPosition({
-          x: event.clientX - reactFlowBounds.left,
-          y: event.clientY - reactFlowBounds.top,
-        });
-        
-        console.log('Calculated position:', position);
+      setNodes((nds) => [...nds, newNode]);
+    } catch (error) {
+      console.error('Error adding new node:', error);
+    }
+  }, [setNodes]); // Remover dependência do reactFlow
 
-        // Get the appropriate icon based on the iconType
-        const icon = getIconForType(parsedData.iconType);
-
-        // Create a new node with a unique ID
-        const newNode = {
-          id: `${parsedData.id}-${Date.now()}`,
-          type: 'customNode',
-          position,
-          data: { 
-            label: parsedData.label,
-            description: parsedData.description,
-            icon: icon,
-            type: parsedData.nodeType || 'custom',
-          },
-        };
-        console.log('Created new node:', newNode);
-
-        setNodes((nds) => nds.concat(newNode));
-      } catch (error) {
-        console.error('Error adding new node:', error);
-      }
-    },
-    [reactFlow, setNodes],
-  );
-
+  // Excluir nós e conexões selecionados
   const onSelectionDelete = useCallback(() => {
-    setNodes(nodes => nodes.filter(node => !node.selected));
-    setEdges(edges => edges.filter(edge => !edge.selected));
+    setNodes((nds) => nds.filter((node) => !node.selected));
+    setEdges((eds) => eds.filter((edge) => !edge.selected));
   }, [setNodes, setEdges]);
 
   return (
@@ -323,15 +252,18 @@ const FlowWithProvider = () => {
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
         nodeTypes={nodeTypes}
-        defaultEdgeOptions={{
-          type: 'smoothstep',
-          animated: true,
-        }}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
         fitView
         style={{ backgroundColor: "var(--color-canvas-subtle)" }}
-        minZoom={0.2}
-        maxZoom={1.5}
-        defaultViewport={{ x: 0, y: 0, zoom: 0.8 }}
+        // CONFIGURAÇÕES SIMPLIFICADAS PARA EVITAR CONFLITOS
+        connectionLineType="default"
+        connectionLineStyle={{
+          stroke: '#000',
+          strokeWidth: 2,
+        }}
+        snapToGrid={true}
+        snapGrid={[15, 15]}
       >
         <Panel position="top-right">
           <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
@@ -382,18 +314,17 @@ const FlowWithProvider = () => {
             color: 'white',
             padding: '8px 16px',
             borderRadius: '4px',
-            zIndex: 1000,
-            boxShadow: '0 3px 8px rgba(0,0,0,0.3)',
+            zIndex: 10,
           }}
         >
-          <Text sx={{ fontSize: 1, color: 'white' }}>Connecting... Drag to connect nodes</Text>
+          <Text sx={{ fontSize: 1, color: 'white' }}>Connecting...</Text>
         </Box>
       )}
     </div>
   );
 };
 
-// Wrapper component that provides the ReactFlow context
+// Wrapper com ReactFlowProvider
 const AgentFlowDiagram = () => {
   return (
     <ReactFlowProvider>
