@@ -12,120 +12,19 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Vincius AI GUI</title>
+    <!-- Estilos básicos - apenas o mínimo necessário -->
     <style>
-      /* Estilos críticos simplificados */
       body {
         margin: 0;
         padding: 0;
         overflow: hidden;
-      }
-      
-      /* Limpar estilos que podem interferir com o ReactFlow */
-      .react-flow__edge-path, .react-flow__connection-path {
-        stroke: #000 !important;
-        stroke-width: 2 !important;
-        stroke-dasharray: none !important;
-      }
-      
-      /* Estilos críticos para os handles e performance */
-      .react-flow__handle {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background-color: #2ecc71;
-        border: 1px solid white;
-      }
-      
-      /* Reduzir laytout shifts ao iniciar o app */
-      body {
-        overflow: hidden;
-        margin: 0;
-        padding: 0;
         height: 100vh;
         width: 100vw;
       }
-      
-      /* Prevenir seleção de texto durante movimento */
-      .dragging {
-        user-select: none !important;
-        cursor: grabbing !important;
-      }
-      
-      /* Melhorar performance em elementos arrastáveis */
-      [draggable], .react-flow__node {
-        -webkit-user-drag: none;
-        user-select: none;
-        touch-action: none;
-      }
-
-      /* Estilos críticos para performance */
-      body.dragging {
-        cursor: grabbing !important;
-        user-select: none !important;
-      }
-      
-      body.dragging * {
-        transition: none !important;
-        animation: none !important;
-      }
-      
-      .react-flow__node {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-      
-      /* "Força bruta" para prevenir piscadas durante arrasto */
-      body.dragging .react-flow__node {
-        transition: none !important;
-        animation: none !important;
-        contain: strict;
-        transform: translate3d(0,0,0);
-        will-change: transform;
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        -webkit-transform-style: preserve-3d;
-        transform-style: preserve-3d;
-        pointer-events: auto;
-      }
     </style>
-    <!-- Preload dos scripts críticos -->
-    <link rel="preload" href="%PUBLIC_URL%/static/js/main.chunk.js" as="script">
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <script>
-      // Adicionar script de otimização de performance durante interações
-      window.addEventListener('mousedown', function() {
-        document.body.classList.add('user-interacting');
-      });
-      
-      window.addEventListener('mouseup', function() {
-        document.body.classList.remove('user-interacting');
-      });
-
-      // Script para monitorar problemas de renderização
-      window.addEventListener('DOMContentLoaded', function() {
-        // Desabilitar todos os efeitos em dispositivos de baixo desempenho
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (prefersReducedMotion) {
-          document.body.classList.add('reduced-motion');
-        }
-        
-        // Monitorar frames perdidos durante interações
-        let lastTimestamp = 0;
-        window.requestAnimationFrame(function checkFrameRate(timestamp) {
-          if (lastTimestamp) {
-            const delta = timestamp - lastTimestamp;
-            if (delta > 100 && document.body.classList.contains('dragging')) {
-              console.log('Frame drop detected:', delta + 'ms');
-              // Forçar modo de baixa animação se detectar problemas
-              document.body.classList.add('reduced-motion');
-            }
-          }
-          lastTimestamp = timestamp;
-          window.requestAnimationFrame(checkFrameRate);
-        });
-      });
-    </script>
   </body>
 </html>
