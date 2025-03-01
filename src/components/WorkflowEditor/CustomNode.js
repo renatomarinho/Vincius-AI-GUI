@@ -40,7 +40,7 @@ const CustomNode = (props) => {
     
     // Use the emergency sidebar that's guaranteed to work
     if (window.emergencySidebar) {
-      console.log('Opening emergency sidebar');
+      console.log('Opening agent sidebar');
       window.emergencySidebar.open(props);
       return;
     }
@@ -64,7 +64,7 @@ const CustomNode = (props) => {
     
     // Use the emergency sidebar that's guaranteed to work
     if (window.emergencySidebar) {
-      console.log('Opening emergency sidebar');
+      console.log('Opening agent sidebar');
       window.emergencySidebar.open(props);
       return;
     }

@@ -12,7 +12,6 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Vincius AI GUI</title>
-    <!-- Estilos básicos - apenas o mínimo necessário -->
     <style>
       body {
         margin: 0;
@@ -26,99 +25,6 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <div id="fixed-sidebar" style="position: fixed; right: -350px; top: 0; width: 350px; height: 100%; background-color: white; box-shadow: -2px 0 10px rgba(0,0,0,0.3); z-index: 99999; transition: right 0.3s ease;">
-      <div style="background-color: red; color: white; padding: 10px; font-weight: bold;">
-        EMERGENCY SIDEBAR
-        <button id="close-fixed-sidebar" style="float: right; background: none; border: none; color: white; cursor: pointer;">X</button>
-      </div>
-      <div id="fixed-sidebar-content" style="padding: 20px;">
-        <h2>Node Configuration</h2>
-        <p>This is a fixed emergency sidebar that bypasses React completely.</p>
-        <div id="node-details" style="margin-top: 20px;"></div>
-        <button id="emergency-save-button" style="background-color: #2ea44f; color: white; border: none; padding: 8px 16px; border-radius: 6px; margin-top: 20px; cursor: pointer;">Save Changes</button>
-      </div>
-    </div>
-
-    <script>
-    // Add this script to control the emergency sidebar
-    document.addEventListener('DOMContentLoaded', function() {
-      const sidebar = document.getElementById('fixed-sidebar');
-      
-      // Define global helpers to open/close the emergency sidebar
-      window.emergencySidebar = {
-        open: function(nodeData) {
-          sidebar.style.right = '0';
-          const nodeDetails = document.getElementById('node-details');
-          nodeDetails.innerHTML = `
-            <div style="border: 1px solid #ccc; padding: 10px; border-radius: 6px;">
-              <p><strong>ID:</strong> ${nodeData?.id || 'No ID'}</p>
-              <p><strong>Label:</strong> ${nodeData?.data?.label || 'No Label'}</p>
-            </div>
-            <div style="margin-top: 10px;">
-              <label for="emergency-node-name" style="display: block; margin-bottom: 5px;">Node Name:</label>
-              <input id="emergency-node-name" type="text" value="${nodeData?.data?.label || ''}" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-            </div>
-          `;
-          
-          // Store the node data for save functionality
-          window.emergencySidebar.currentNode = nodeData;
-          
-          console.log('Emergency sidebar opened with data:', nodeData);
-        },
-        close: function() {
-          sidebar.style.right = '-350px';
-        },
-        save: function() {
-          const newName = document.getElementById('emergency-node-name').value;
-          const nodeData = window.emergencySidebar.currentNode;
-          
-          if (nodeData && window.updateNodeName) {
-            window.updateNodeName(nodeData.id, newName);
-            console.log('Saved node with new name:', newName);
-          } else {
-            console.log('Cannot save: updateNodeName function not available');
-          }
-          
-          this.close();
-        },
-        currentNode: null
-      };
-      
-      // Add click handler for close button
-      document.getElementById('close-fixed-sidebar').addEventListener('click', function() {
-        window.emergencySidebar.close();
-      });
-      
-      // Add click handler for save button
-      document.getElementById('emergency-save-button').addEventListener('click', function() {
-        window.emergencySidebar.save();
-      });
-      
-      // Close sidebar when clicking outside
-      document.addEventListener('mousedown', function(e) {
-        // Check if click was outside the sidebar
-        if (sidebar.style.right === '0px' && !sidebar.contains(e.target)) {
-          window.emergencySidebar.close();
-        }
-      });
-      
-      // Add a global key handler for quick opening
-      document.addEventListener('keydown', function(event) {
-        // Alt+S to toggle the sidebar
-        if (event.altKey && event.key === 's') {
-          if (sidebar.style.right === '0px') {
-            window.emergencySidebar.close();
-          } else {
-            window.emergencySidebar.open({id: 'keyboard-triggered', data: {label: 'Opened with Alt+S'}});
-          }
-        }
-        
-        // Escape key to close sidebar
-        if (event.key === 'Escape' && sidebar.style.right === '0px') {
-          window.emergencySidebar.close();
-        }
-      });
-    });
-    </script>
+    <!-- Removemos o código do sidebar e do script para usar o componente React -->
   </body>
 </html>
