@@ -16,21 +16,24 @@ const SidebarAgents = () => {
       type: 'agent',
       label: 'Analyst',
       description: 'Analyzes data and provides insights',
-      icon: <BeakerIcon size={16} />
+      icon: <BeakerIcon size={16} />,
+      category: 'Agent'
     },
     {
       id: 'code',
       type: 'agent',
       label: 'Developer',
       description: 'Writes and optimizes code',
-      icon: <CodeIcon size={16} />
+      icon: <CodeIcon size={16} />,
+      category: 'Agent'
     },
     {
       id: 'checklist',
       type: 'agent',
       label: 'Tester',
       description: 'Tests outputs and validates results',
-      icon: <ChecklistIcon size={16} />
+      icon: <ChecklistIcon size={16} />,
+      category: 'Agent'
     }
   ];
 
@@ -40,14 +43,16 @@ const SidebarAgents = () => {
       type: 'connector',
       label: 'Prompter',
       description: 'Creates prompts for AI models',
-      icon: <CommentDiscussionIcon size={16} />
+      icon: <CommentDiscussionIcon size={16} />,
+      category: 'Connector'
     },
     {
       id: 'api',
       type: 'connector',
       label: 'API Requests',
       description: 'Makes external API calls',
-      icon: <ApiIcon size={16} />
+      icon: <ApiIcon size={16} />,
+      category: 'Connector'
     }
   ];
 

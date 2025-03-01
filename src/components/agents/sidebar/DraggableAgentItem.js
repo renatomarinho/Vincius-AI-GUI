@@ -9,11 +9,35 @@ const DraggableAgentItem = ({ item }) => {
       id: item.id,
       label: item.label,
       description: item.description,
-      iconType: item.id // Use item.id to identify which icon to use
+      iconType: item.id, // Usar o ID como tipo de ícone
+      nodeType: item.type // Pass the node type (agent or connector)
     };
     
-    event.dataTransfer.setData('application/reactflow', JSON.stringify(dragData));
+    const serializedData = JSON.stringify(dragData);
+    console.log('Starting drag with data:', dragData);
+    
+    // Definir os dados de arrasto em vários formatos para maior compatibilidade
+    event.dataTransfer.setData('application/reactflow', serializedData);
+    event.dataTransfer.setData('text/plain', serializedData);
     event.dataTransfer.effectAllowed = 'move';
+    
+    // Adicionar uma imagem de arrasto (opcional)
+    const dragPreview = document.createElement('div');
+    dragPreview.innerHTML = item.label;
+    dragPreview.style.backgroundColor = 'var(--color-accent-subtle)';
+    dragPreview.style.padding = '8px';
+    dragPreview.style.borderRadius = '4px';
+    dragPreview.style.color = 'var(--color-fg-default)';
+    dragPreview.style.position = 'absolute';
+    dragPreview.style.top = '-1000px';
+    document.body.appendChild(dragPreview);
+
+    event.dataTransfer.setDragImage(dragPreview, 20, 20);
+    
+    // Limpar elemento após curto período
+    setTimeout(() => {
+      document.body.removeChild(dragPreview);
+    }, 100);
   };
 
   return (
@@ -24,11 +48,12 @@ const DraggableAgentItem = ({ item }) => {
         borderRadius: 2,
         border: '1px solid',
         borderColor: 'border.default',
-        bg: 'canvas.subtle',
+        bg: item.type === 'agent' ? 'accent.subtle' : 'success.subtle',
         cursor: 'grab',
         transition: 'all 0.2s ease',
+        userSelect: 'none', // Prevenir seleção de texto durante arrasto
         '&:hover': {
-          bg: 'canvas.inset',
+          bg: item.type === 'agent' ? 'accent.muted' : 'success.muted',
           transform: 'translateY(-2px)'
         },
         '&:active': {
@@ -39,8 +64,11 @@ const DraggableAgentItem = ({ item }) => {
       onDragStart={(e) => onDragStart(e, 'customNode')}
       data-testid={`draggable-${item.id}`}
     >
+      <Text sx={{ fontSize: '11px', fontWeight: 'bold', mb: 1, textTransform: 'uppercase', color: item.type === 'agent' ? 'accent.fg' : 'success.fg' }}>
+        {item.category}
+      </Text>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-        <Box sx={{ mr: 2, color: 'accent.fg' }}>{item.icon}</Box>
+        <Box sx={{ mr: 2, color: item.type === 'agent' ? 'accent.fg' : 'success.fg' }}>{item.icon}</Box>
         <Text sx={{ fontWeight: 'bold', fontSize: 1 }}>{item.label}</Text>
       </Box>
       <Text sx={{ fontSize: 0, color: 'fg.muted', display: 'block', lineHeight: 1.4 }}>
