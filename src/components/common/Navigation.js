@@ -15,6 +15,9 @@ const Navigation = () => {
         <Link as={RouterLink} to="/components" sx={{ color: 'fg.default', textDecoration: 'none', fontWeight: 'medium' }}>
           Components
         </Link>
+        <Link as={RouterLink} to="/agents" sx={{ color: 'fg.default', textDecoration: 'none', fontWeight: 'medium' }}>
+          Agents
+        </Link>
         <Link as={RouterLink} to="/dashboard" sx={{ color: 'fg.default', textDecoration: 'none', fontWeight: 'medium' }}>
           Dashboard
         </Link>

@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ComponentDemoPage from './pages/ComponentDemoPage';
+import AgentsPage from './pages/AgentsPage';
 import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/components" element={<ComponentDemoPage />} />
+              <Route path="/agents" element={<AgentsPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </MainLayout>
