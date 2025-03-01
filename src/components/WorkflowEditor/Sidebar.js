@@ -1,58 +1,12 @@
 import React from 'react';
 import { Box, Heading, Text } from '@primer/react';
-import { 
-  DatabaseIcon, 
-  CodeIcon, 
-  FilterIcon, 
-  GearIcon, 
-  GraphIcon, 
-  HubotIcon, 
-  TableIcon, 
-  PulseIcon,
-  FileIcon,
-  TerminalIcon,
-  BroadcastIcon
-} from '@primer/octicons-react';
-
+import AgentsService from '../Agents/AgentsService';
 import styles from './WorkflowEditor.module.css';
 
-const nodeCategories = [
-  {
-    name: 'Sources',
-    nodes: [
-      { type: 'input', name: 'Database Source', icon: DatabaseIcon, inputs: [], outputs: ['data'] },
-      { type: 'input', name: 'API Source', icon: BroadcastIcon, inputs: [], outputs: ['data'] },
-      { type: 'input', name: 'File Input', icon: FileIcon, inputs: [], outputs: ['data'] },
-    ],
-  },
-  {
-    name: 'Processing',
-    nodes: [
-      { type: 'process', name: 'Filter Data', icon: FilterIcon, inputs: ['data'], outputs: ['filtered'] },
-      { type: 'process', name: 'Transform', icon: CodeIcon, inputs: ['data'], outputs: ['transformed'] },
-      { type: 'process', name: 'Aggregate', icon: TableIcon, inputs: ['data'], outputs: ['aggregated'] },
-      { type: 'process', name: 'AI Agent', icon: HubotIcon, inputs: ['prompt'], outputs: ['response'] },
-    ],
-  },
-  {
-    name: 'Outputs',
-    nodes: [
-      { type: 'output', name: 'Visualization', icon: GraphIcon, inputs: ['data'], outputs: [] },
-      { type: 'output', name: 'Export Data', icon: DatabaseIcon, inputs: ['data'], outputs: [] },
-      { type: 'output', name: 'API Output', icon: TerminalIcon, inputs: ['data'], outputs: [] },
-    ],
-  },
-  {
-    name: 'Utilities',
-    nodes: [
-      { type: 'utility', name: 'Custom Script', icon: CodeIcon, inputs: ['input'], outputs: ['output'] },
-      { type: 'utility', name: 'Monitoring', icon: PulseIcon, inputs: ['data'], outputs: ['alerts'] },
-      { type: 'utility', name: 'Configuration', icon: GearIcon, inputs: ['settings'], outputs: ['config'] },
-    ],
-  },
-];
-
 const Sidebar = () => {
+  // Get agent categories from the AgentsService
+  const nodeCategories = AgentsService.getAgentCategories();
+  
   const onDragStart = (event, nodeType, node) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.setData('node', JSON.stringify(node));
