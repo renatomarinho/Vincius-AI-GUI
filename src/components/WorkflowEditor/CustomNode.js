@@ -93,8 +93,8 @@ const CustomNode = (props) => {
         </NodeHeaderIcon>
         <NodeHeaderTitle>{label || 'Unnamed Node'}</NodeHeaderTitle>
         <NodeHeaderActions>
-          <NodeHeaderMenuAction label="Node options">
-            <DropdownMenuLabel>Node Options</DropdownMenuLabel>
+          <NodeHeaderMenuAction label="Agent options">
+            <DropdownMenuLabel>Agent Options</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleConfigureClick}>Configure</DropdownMenuItem>
             <DropdownMenuItem>Duplicate</DropdownMenuItem>
