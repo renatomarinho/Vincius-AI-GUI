@@ -18,12 +18,18 @@ import { PlayIcon, DownloadIcon, TrashIcon } from '@primer/octicons-react';
 
 import Sidebar from './Sidebar';
 import CustomNode from './CustomNode';
+import CustomEdge from './CustomEdge';
 import { getLayoutedElements } from './layout';
 import styles from './WorkflowEditor.module.css';
 
 // Node types definition for custom nodes
 const nodeTypes = {
   customNode: CustomNode,
+};
+
+// Edge types definition
+const edgeTypes = {
+  customEdge: CustomEdge,
 };
 
 const initialNodes = [];
@@ -41,6 +47,7 @@ const ReactFlowComponent = () => {
       addEdge({ 
         ...params, 
         animated: true,
+        type: 'customEdge',
         style: { stroke: '#3182ce' },
         markerEnd: {
           type: MarkerType.ArrowClosed,
@@ -158,6 +165,13 @@ const ReactFlowComponent = () => {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          defaultEdgeOptions={{
+            type: 'customEdge',
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+            }
+          }}
           fitView
         >
           <Controls />

@@ -143,3 +143,34 @@
 .configSidebar.closed {
   transform: translateX(100%);
 }
+
+/* Add styles for edge delete button */
+.edgeButtonContainer {
+  position: absolute;
+  transform-origin: center;
+  pointer-events: all;
+  z-index: 1000;
+}
+
+.edgeDeleteButton {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border: 1px solid #ff0072;
+  color: #ff0072;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.edgeDeleteButton:hover {
+  background-color: #ff0072;
+  color: white;
+  transform: scale(1.1);
+}

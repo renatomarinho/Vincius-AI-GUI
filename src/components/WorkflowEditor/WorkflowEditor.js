@@ -24,8 +24,6 @@ const edgeTypes = {
   custom: CustomEdge,
 };
 
-// Remove global force-open function that's just for testing
-
 const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
   const safeInitialNodes = createSafeNodes(initialNodes);
   const safeInitialEdges = createSafeEdges(initialEdges);
@@ -47,8 +45,6 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
   
   // Register these functions
   registerSidebarControls(openSidebar, setNodeForConfig);
-  
-  // Remove unused areSidebarControlsRegistered check
   
   // The node configuration handler
   const handleNodeConfigure = useCallback((node) => {
@@ -146,8 +142,6 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
     ));
   }, [setEdges]);
   
-  // Remove testSidebar function and associated useEffect
-  
   // Custom event listener
   useEffect(() => {
     // DOM-based mechanism
@@ -211,6 +205,23 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
     };
   }, []);
   
+  // Edge deletion event listener
+  useEffect(() => {
+    const handleEdgeDeleteEvent = (event) => {
+      const { edgeId } = event.detail;
+      if (edgeId) {
+        console.log('Deleting edge:', edgeId);
+        setEdges((eds) => eds.filter((e) => e.id !== edgeId));
+      }
+    };
+    
+    window.addEventListener('workflow-edge:delete', handleEdgeDeleteEvent);
+    
+    return () => {
+      window.removeEventListener('workflow-edge:delete', handleEdgeDeleteEvent);
+    };
+  }, [setEdges]);
+  
   return (
     <>
       <ReactFlowProvider>
@@ -235,8 +246,6 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
           >
             <Background />
             <Controls />
-            
-            {/* Remove debug panel */}
           </ReactFlow>
           
           {/* Edge deletion control */}

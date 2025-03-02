@@ -1,8 +1,20 @@
 import React from 'react';
-import { BaseEdge, getBezierPath } from '@xyflow/react';
+import { BaseEdge, getBezierPath, EdgeLabelRenderer } from '@xyflow/react';
 import styles from './WorkflowEditor.module.css';
 
-const CustomEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, style = {}, selected, onClick }) => {
+const CustomEdge = ({ 
+  id, 
+  sourceX, 
+  sourceY, 
+  targetX, 
+  targetY, 
+  sourcePosition, 
+  targetPosition, 
+  style = {}, 
+  selected, 
+  markerEnd,
+  data
+}) => {
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -19,15 +31,20 @@ const CustomEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, ta
     strokeWidth: selected ? 2 : 1,
   };
 
-  // Clickable invisible path with larger stroke width for easier selection
-  const handleEdgeClick = (evt) => {
+  // Edge delete handler - we'll use the global ReactFlow instance
+  const onEdgeClick = (evt) => {
     evt.stopPropagation();
-    console.log('Edge clicked in component:', id);
+    
+    // Dispatch a custom event that the workflow editor can listen to
+    const event = new CustomEvent('workflow-edge:delete', { 
+      detail: { edgeId: id } 
+    });
+    window.dispatchEvent(event);
   };
 
   return (
     <>
-      <BaseEdge path={edgePath} style={edgeStyle} />
+      <BaseEdge path={edgePath} style={edgeStyle} markerEnd={markerEnd} />
       
       {/* Invisible wider path for easier clicking */}
       <path
@@ -35,7 +52,6 @@ const CustomEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, ta
         stroke="transparent"
         strokeWidth={10}
         fill="none"
-        onClick={handleEdgeClick}
         style={{ cursor: 'pointer' }}
       />
       
@@ -50,6 +66,24 @@ const CustomEdge = ({ id, sourceX, sourceY, targetX, targetY, sourcePosition, ta
           style={{ pointerEvents: 'none' }}
         />
       )}
+      
+      {/* Delete button in the middle of the edge */}
+      <EdgeLabelRenderer>
+        <div
+          className={styles.edgeButtonContainer}
+          style={{
+            transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+          }}
+        >
+          <button 
+            className={styles.edgeDeleteButton} 
+            onClick={onEdgeClick}
+            title="Delete connection"
+          >
+            ×
+          </button>
+        </div>
+      </EdgeLabelRenderer>
     </>
   );
 };
