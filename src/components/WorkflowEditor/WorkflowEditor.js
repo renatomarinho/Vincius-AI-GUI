@@ -298,9 +298,9 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
             <Controls />
             
             <Panel position="top-left">
-              <div style={{ padding: '10px', background: 'white', borderRadius: '4px' }}>
+              <div style={{ padding: '0px', background: 'white', borderRadius: '4px' }}>
                 <div>{debugInfo}</div>
-                <div style={{ fontSize: '12px', marginTop: '5px', color: '#666' }}>
+                <div style={{ fontSize: '12px', marginTop: '0', color: '#666' }}>
                   Handler registered: {getDebugInfo().isHandlerRegistered ? 'Yes' : 'No'}<br/>
                   Sidebar controls: {getDebugInfo().hasSidebarControls ? 'Yes' : 'No'}<br/>
                   Pending configs: {getDebugInfo().pendingConfigurationsCount}
@@ -343,100 +343,14 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
             </div>
           )}
           
-          {/* Debug buttons */}
-          <div style={{ position: 'absolute', bottom: '70px', right: '10px', zIndex: 1000 }}>
-            <button
-              onClick={testSidebar}
-              style={{
-                backgroundColor: '#ff6b6b',
-                color: 'white',
-                border: 'none',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                marginRight: '10px'
-              }}
-            >
-              Test Sidebar
-            </button>
-            
-            <button
-              onClick={() => {
-                console.log('Debug Info:', getDebugInfo());
-                console.log('isSidebarOpen:', isSidebarOpen);
-                console.log('configNode:', configNode);
-              }}
-              style={{
-                backgroundColor: '#0366d6',
-                color: 'white',
-                border: 'none',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
-            >
-              Print Debug Info
-            </button>
-          </div>
+          {/* Remove Debug buttons - they're only for development/testing */}
+          {/* These debug buttons were added for testing sidebar functionality 
+              and are not needed in production code */}
           
-          <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 9999 }}>
-            <button
-              onClick={() => {
-                console.log("Opening emergency sidebar");
-                if (window.emergencySidebar) {
-                  window.emergencySidebar.open({
-                    id: 'emergency-node',
-                    data: { label: 'Emergency Node' }
-                  });
-                } else {
-                  console.error("Emergency sidebar not available");
-                }
-              }}
-              style={{
-                background: '#ff3b30',
-                color: 'white',
-                border: 'none',
-                padding: '12px',
-                fontWeight: 'bold',
-                borderRadius: '4px'
-              }}
-            >
-              VANILLA JS SIDEBAR
-            </button>
-          </div>
+          {/* Right sidebar highlight debugging element can be removed too */}
           
-          <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 9999 }}>
-            <button
-              onClick={() => {
-                console.log("Emergency sidebar open");
-                setConfigNode({id: "emergency", data: { label: "Emergency Node" }});
-                setIsSidebarOpen(true);
-              }}
-              style={{
-                background: 'red',
-                color: 'white',
-                border: 'none',
-                padding: '10px',
-                fontWeight: 'bold'
-              }}
-            >
-              EMERGENCY OPEN SIDEBAR
-            </button>
-          </div>
         </div>
       </ReactFlowProvider>
-      
-      {/* Right Sidebar - HIGHLIGHTED FOR DEBUGGING */}
-      <div style={{
-        position: 'fixed',
-        top: 0,
-        right: 0,
-        width: '10px',
-        height: '100vh',
-        background: 'red',
-        zIndex: 9998,
-        display: isSidebarOpen ? 'block' : 'none'
-      }}></div>
       
       {/* Right Sidebar */}
       <RightSidebar
