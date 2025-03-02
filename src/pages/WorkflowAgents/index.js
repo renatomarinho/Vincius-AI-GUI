@@ -6,7 +6,7 @@ import Footer from '../../components/Globals/Footer';
 
 const WorkflowAgents = () => {
   return (
-    <PageLayout>
+    <div>
       <PageLayout.Header>
         <Header />
       </PageLayout.Header>
@@ -16,7 +16,7 @@ const WorkflowAgents = () => {
       <PageLayout.Footer>
         <Footer />
       </PageLayout.Footer>
-    </PageLayout>
+    </div>
   );
 };
 

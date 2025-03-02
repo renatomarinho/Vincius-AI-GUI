@@ -34,7 +34,7 @@ const ReactFlowComponent = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef(null);
-  const { getViewport } = useReactFlow();
+  const { getViewport, setViewport } = useReactFlow();
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => 
@@ -69,13 +69,13 @@ const ReactFlowComponent = () => {
         return;
       }
 
-      // Get viewport information (zoom & position)
-      const { zoom, x, y } = getViewport();
+      // Save current viewport state before adding the node
+      const currentViewport = getViewport();
       
       // Calculate position based on the drop coordinates and current viewport
       const position = {
-        x: (event.clientX - reactFlowBounds.left - x) / zoom,
-        y: (event.clientY - reactFlowBounds.top - y) / zoom,
+        x: (event.clientX - reactFlowBounds.left - currentViewport.x) / currentViewport.zoom,
+        y: (event.clientY - reactFlowBounds.top - currentViewport.y) / currentViewport.zoom,
       };
 
       const newNode = {
@@ -91,9 +91,20 @@ const ReactFlowComponent = () => {
         },
       };
 
+      // Add the new node
       setNodes((nds) => nds.concat(newNode));
+      
+      // Use setTimeout to ensure the viewport is restored after React has processed state updates
+      setTimeout(() => {
+        // Restore the previous viewport settings to maintain zoom level
+        setViewport({
+          x: currentViewport.x,
+          y: currentViewport.y,
+          zoom: currentViewport.zoom
+        });
+      }, 0);
     },
-    [getViewport, setNodes]
+    [getViewport, setNodes, setViewport]
   );
 
   const onLayout = useCallback(() => {
