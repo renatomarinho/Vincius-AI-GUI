@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import ReactFlow, { 
   ReactFlowProvider, 
   Background, 
@@ -13,7 +13,7 @@ import CustomNode from './CustomNode';
 import CustomEdge from './CustomEdge';
 import { RightSidebar } from '../Agents/Sidebar';
 import { createSafeNodes, createSafeEdges } from './WorkflowEditorUtils';
-import { setConfigureNodeHandler, isHandlerRegistered, registerSidebarControls, getDebugInfo } from './NodeConfigEvents';
+import { setConfigureNodeHandler, registerSidebarControls, getDebugInfo } from './NodeConfigEvents';
 import styles from './WorkflowEditor.module.css';
 
 const nodeTypes = {
@@ -24,11 +24,7 @@ const edgeTypes = {
   custom: CustomEdge,
 };
 
-// Global force-open function for testing
-window.forceOpenSidebar = function() {
-  // Will be implemented inside the component
-  console.log("Global force open function called, but not yet implemented");
-};
+// Remove global force-open function that's just for testing
 
 const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
   const safeInitialNodes = createSafeNodes(initialNodes);
@@ -40,31 +36,22 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [debugInfo, setDebugInfo] = useState('No edge selected');
   
-  // Register the sidebar controls immediately after defining the functions
+  // Register the sidebar controls
   const openSidebar = useCallback((isOpen) => {
-    console.log('Setting sidebar open state to:', isOpen);
     setIsSidebarOpen(isOpen);
   }, []);
   
   const setNodeForConfig = useCallback((node) => {
-    console.log('Setting node for config:', node);
     setConfigNode(node);
   }, []);
   
-  // Register these functions IMMEDIATELY, not in useEffect
+  // Register these functions
   registerSidebarControls(openSidebar, setNodeForConfig);
   
-  // Also verify registration in an effect
-  useEffect(() => {
-    if (!areSidebarControlsRegistered()) {
-      console.log('Sidebar controls not registered, re-registering');
-      registerSidebarControls(openSidebar, setNodeForConfig);
-    }
-  }, [openSidebar, setNodeForConfig]);
+  // Remove unused areSidebarControlsRegistered check
   
   // The node configuration handler
   const handleNodeConfigure = useCallback((node) => {
-    console.log('handleNodeConfigure called with:', node);
     setConfigNode(node);
     setIsSidebarOpen(true);
     return true;
@@ -72,7 +59,6 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
   
   // Register the handler
   useEffect(() => {
-    console.log('Registering node configure handler');
     const oldHandler = setConfigureNodeHandler(handleNodeConfigure);
     return () => {
       if (oldHandler) {
@@ -160,79 +146,35 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
     ));
   }, [setEdges]);
   
-  // Debug - Force open sidebar with test node
-  const testSidebar = useCallback(() => {
-    console.log('Force opening sidebar for test');
-    const testNode = {
-      id: 'test-node',
-      data: { label: 'Test Node' }
-    };
-    setNodeForConfig(testNode);
-    openSidebar(true);
-  }, [openSidebar, setNodeForConfig]);
+  // Remove testSidebar function and associated useEffect
   
-  // Run test on mount (optional)
+  // Custom event listener
   useEffect(() => {
-    // Wait a moment then run a test
-    const timer = setTimeout(testSidebar, 1000);
-    return () => clearTimeout(timer);
-  }, [testSidebar]);
-  
-  // Add a custom event listener to handle configuration requests
-  useEffect(() => {
-    // DOM-based fallback mechanism
+    // DOM-based mechanism
     const handleCustomConfigEvent = (event) => {
-      console.log('Custom config event received:', event.detail);
       const { node } = event.detail;
       if (node) {
-        console.log('Configuring node from custom event - FORCE SETTING STATE:', node);
-        // Force state update
-        setIsSidebarOpen(false); // Reset first to force re-render
+        // Reset first to force re-render
+        setIsSidebarOpen(false);
         setTimeout(() => {
           setConfigNode(node);
           setIsSidebarOpen(true);
-          console.log("STATE UPDATED: isSidebarOpen =", true);
         }, 10);
       }
-    };
-    
-    // Make force function available globally for debugging
-    window.forceOpenSidebar = () => {
-      console.log("Forcing sidebar open from global method");
-      const testNode = { id: 'test-forced', data: { label: 'Test Forced' } };
-      setConfigNode(testNode);
-      setIsSidebarOpen(true);
-      
-      // Double-check after a delay
-      setTimeout(() => {
-        console.log("Checking sidebar state:", { 
-          isOpen: isSidebarOpen, 
-          configNode: configNode 
-        });
-      }, 100);
     };
     
     // Listen for the custom event
     window.addEventListener('workflow-editor:configure-node', handleCustomConfigEvent);
     
-    // Also initialize the global config object with direct methods to our state setters
+    // Initialize global config methods
     if (window.__WORKFLOW_EDITOR_CONFIG__) {
-      console.log('Setting up global DOM fallback methods');
       window.__WORKFLOW_EDITOR_CONFIG__.openSidebar = (isOpen) => {
-        console.log('Opening sidebar via global DOM method:', isOpen);
         setIsSidebarOpen(isOpen);
-        // Force a check after a short delay
-        setTimeout(() => {
-          console.log("Sidebar state after DOM method:", isSidebarOpen);
-        }, 100);
       };
       window.__WORKFLOW_EDITOR_CONFIG__.configNode = (node) => {
-        console.log('Setting config node via global DOM method:', node);
         setConfigNode(node);
       };
       window.__WORKFLOW_EDITOR_CONFIG__.process = (node) => {
-        console.log('Processing node via global DOM method:', node);
-        
         // First close the sidebar (if open)
         setIsSidebarOpen(false);
         
@@ -240,16 +182,14 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
         setTimeout(() => {
           setConfigNode(node);
           setIsSidebarOpen(true);
-          console.log("Sidebar should now be open with node:", node);
         }, 50);
         
         return true;
       };
     }
     
-    // Function for the emergency sidebar to update node names
+    // Function for the sidebar to update node names
     window.updateNodeName = (nodeId, newName) => {
-      console.log(`Updating node ${nodeId} with name ${newName}`);
       setNodes((nds) => 
         nds.map((node) => 
           node.id === nodeId ? {
@@ -267,10 +207,9 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
     // Clean up
     return () => {
       window.removeEventListener('workflow-editor:configure-node', handleCustomConfigEvent);
-      window.forceOpenSidebar = () => console.log("Component unmounted");
       window.updateNodeName = null;
     };
-  }, []); // Empty deps to ensure this runs once on mount
+  }, []);
   
   return (
     <>
@@ -297,16 +236,7 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
             <Background />
             <Controls />
             
-            <Panel position="top-left">
-              <div style={{ padding: '0px', background: 'white', borderRadius: '4px' }}>
-                <div>{debugInfo}</div>
-                <div style={{ fontSize: '12px', marginTop: '0', color: '#666' }}>
-                  Handler registered: {getDebugInfo().isHandlerRegistered ? 'Yes' : 'No'}<br/>
-                  Sidebar controls: {getDebugInfo().hasSidebarControls ? 'Yes' : 'No'}<br/>
-                  Pending configs: {getDebugInfo().pendingConfigurationsCount}
-                </div>
-              </div>
-            </Panel>
+            {/* Remove debug panel */}
           </ReactFlow>
           
           {/* Edge deletion control */}
@@ -342,13 +272,6 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
               </button>
             </div>
           )}
-          
-          {/* Remove Debug buttons - they're only for development/testing */}
-          {/* These debug buttons were added for testing sidebar functionality 
-              and are not needed in production code */}
-          
-          {/* Right sidebar highlight debugging element can be removed too */}
-          
         </div>
       </ReactFlowProvider>
       
@@ -357,11 +280,9 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
         title="Node Configuration"
         isOpen={isSidebarOpen}
         onClose={() => {
-          console.log('Closing sidebar');
           setIsSidebarOpen(false);
         }}
         onSave={(data) => {
-          console.log('Saving data:', data);
           if (configNode) {
             setNodes((nds) => nds.map((node) => 
               node.id === configNode.id ? {
