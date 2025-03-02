@@ -175,43 +175,45 @@ const ReactFlowComponent = () => {
 
   return (
     <>
-      <Box className={styles.sidebar}>
-        <Sidebar />
-      </Box>
-      <Box 
-        className={styles.reactflowWrapper}
-        ref={reactFlowWrapper}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-      >
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          defaultEdgeOptions={{
-            type: 'customEdge',
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-            }
-          }}
-          fitView
+      <div className={styles.container}>
+        <div className={styles.sidebar}>
+          <Sidebar />
+        </div>
+        <div 
+          className={styles.reactflowWrapper}
+          ref={reactFlowWrapper}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
         >
-          <Controls />
-          <Background variant="dots" gap={12} size={1} />
-          <Panel position="top-right">
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button onClick={onLayout} leadingIcon={PlayIcon}>Auto Layout</Button>
-              <Button onClick={onSave} leadingIcon={DownloadIcon}>Save</Button>
-              <Button onClick={onRestore}>Restore</Button>
-              <Button variant="danger" onClick={onClear} leadingIcon={TrashIcon}>Clear</Button>
-            </Box>
-          </Panel>
-        </ReactFlow>
-      </Box>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            defaultEdgeOptions={{
+              type: 'customEdge',
+              markerEnd: {
+                type: MarkerType.ArrowClosed,
+              }
+            }}
+            fitView
+          >
+            <Controls />
+            <Background variant="dots" gap={12} size={1} />
+            <Panel position="top-right">
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button onClick={onLayout} leadingIcon={PlayIcon}>Auto Layout</Button>
+                <Button onClick={onSave} leadingIcon={DownloadIcon}>Save</Button>
+                <Button onClick={onRestore}>Restore</Button>
+                <Button variant="danger" onClick={onClear} leadingIcon={TrashIcon}>Clear</Button>
+              </Box>
+            </Panel>
+          </ReactFlow>
+        </div>
+      </div>
     </>
   );
 };

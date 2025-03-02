@@ -5,16 +5,25 @@
   overflow: hidden;
 }
 
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
 .sidebar {
   width: 250px;
+  min-width: 250px; /* Impede que a sidebar encolha */
   background-color: #f6f8fa;
   border-right: 1px solid #d0d7de;
   overflow-y: auto;
+  height: 100%; /* Garante altura total */
 }
 
 .reactflowWrapper {
-  flex-grow: 1;
+  flex: 1;
   height: 100%;
+  overflow: hidden; /* Previne scroll desnecessário */
 }
 
 .dndNode {

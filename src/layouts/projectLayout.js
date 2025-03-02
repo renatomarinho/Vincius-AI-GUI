@@ -1,5 +1,5 @@
 import React from 'react';
-import { PageLayout, TabNav } from '@primer/react';
+import { TabNav } from '@primer/react';
 import { useNavigate, useParams, useLocation, Outlet } from 'react-router-dom';
 import Header from '../components/Globals/Header';
 import Footer from '../components/Globals/Footer';
@@ -17,49 +17,49 @@ const ProjectLayout = () => {
   ];
 
   return (
-    <PageLayout 
-      containerWidth="full"
-      padding="none"
-      rowGap="none"
-      style={{ 
-        height: '100vh',
-      }}
-    >
-      <PageLayout.Header>
+    <div style={{
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden'
+    }}>
+      <div style={{ width: '100%' }}>
         <Header />
-      {project_name && (
-        <TabNav>
-          {tabs.map(tab => (
-            <TabNav.Link
-              key={tab.name}
-              href={tab.path}
-              selected={location.pathname === tab.path}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(tab.path);
-              }}
-            >
-              {tab.name}
-            </TabNav.Link>
-          ))}
-        </TabNav>
-      )}
-      </PageLayout.Header>
-      <PageLayout.Content 
-        style={{ 
-          flex: 1,
-          width: '100%',
-          height: 'calc(100vh - 120px)', // ajusta altura considerando header, tabs e footer
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
+        {project_name && (
+          <TabNav style={{ width: '100%', borderBottom: '1px solid var(--color-border-default)' }}>
+            {tabs.map(tab => (
+              <TabNav.Link
+                key={tab.name}
+                href={tab.path}
+                selected={location.pathname === tab.path}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(tab.path);
+                }}
+              >
+                {tab.name}
+              </TabNav.Link>
+            ))}
+          </TabNav>
+        )}
+      </div>
+
+      <div style={{
+        flex: 1,
+        overflow: 'auto',
+        padding: '16px',
+        width: '100%'
+      }}>
         <Outlet />
-      </PageLayout.Content>
-      <PageLayout.Footer>
+      </div>
+
+      <div style={{
+        width: '100%',
+        borderTop: '1px solid var(--color-border-default)'
+      }}>
         <Footer />
-      </PageLayout.Footer>
-    </PageLayout>
+      </div>
+    </div>
   );
 };
 
