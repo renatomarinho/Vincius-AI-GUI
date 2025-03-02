@@ -219,11 +219,11 @@ const ReactFlowComponent = () => {
 // This is the main wrapper component that provides the ReactFlow context
 const WorkflowEditor = () => {
   return (
-    <Box className={styles.workflowEditor}>
+    <div style={{ width: '100%', height: '100%', position: 'absolute' }}>
       <ReactFlowProvider>
         <ReactFlowComponent />
       </ReactFlowProvider>
-    </Box>
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import WorkflowEditor from '../../components/WorkflowEditor';
+import WorkflowEditor from '../components/WorkflowEditor';
 import { Box } from '@primer/react';
 
 const WorkflowAgents = () => {
