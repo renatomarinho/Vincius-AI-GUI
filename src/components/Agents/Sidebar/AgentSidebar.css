@@ -1,13 +1,14 @@
 .agent-sidebar {
   position: fixed;
+  right: -400px;
   top: 0;
-  right: -350px;
-  width: 350px;
+  width: 380px;
   height: 100vh;
-  background-color: white;
-  box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
-  z-index: 99999;
+  background-color: #ffffff;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
   transition: right 0.3s ease;
+  z-index: 1000;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
 }
@@ -17,40 +18,43 @@
 }
 
 .agent-sidebar-header {
-  background-color: #1a74e8; /* Cor mais em linha com um design profissional */
-  color: white;
-  padding: 10px 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: bold;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e1e4e8;
+  background-color: #f6f8fa;
 }
 
 .close-button {
   background: none;
   border: none;
-  color: white;
-  font-weight: bold;
+  font-size: 18px;
   cursor: pointer;
-  font-size: 16px;
+  padding: 5px;
+}
+
+.close-button:hover {
+  color: #0366d6;
 }
 
 .agent-sidebar-content {
   padding: 20px;
-  overflow-y: auto;
   flex: 1;
+  overflow-y: auto;
 }
 
 .node-info {
-  margin: 20px 0;
+  margin-top: 20px;
+  border-top: 1px solid #e1e4e8;
+  padding-top: 15px;
 }
 
 .node-details {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
   margin-bottom: 15px;
-  background-color: #f8f9fa;
+  padding: 10px;
+  background-color: #f6f8fa;
+  border-radius: 6px;
 }
 
 .form-control {
@@ -63,34 +67,75 @@
   font-weight: 500;
 }
 
-.form-control input {
+.form-control input,
+.form-control textarea {
   width: 100%;
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
+  padding: 8px 10px;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.agent-config-section {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid #e1e4e8;
+}
+
+.agent-config-section h3 {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #24292e;
+}
+
+.agent-config-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.agent-config-textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  font-size: 14px;
+  min-height: 80px;
+  resize: vertical;
 }
 
 .button-group {
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
+  gap: 10px;
+}
+
+.cancel-button,
+.save-button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
 }
 
 .cancel-button {
-  background-color: #f1f2f3;
-  border: 1px solid #d0d7de;
-  padding: 8px 16px;
-  border-radius: 6px;
-  margin-right: 10px;
-  cursor: pointer;
+  background-color: #e1e4e8;
+  color: #24292e;
 }
 
 .save-button {
   background-color: #2ea44f;
   color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #d1d5da;
+}
+
+.save-button:hover {
+  background-color: #22863a;
 }

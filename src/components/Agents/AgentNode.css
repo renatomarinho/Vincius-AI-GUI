@@ -1,0 +1,74 @@
+.agent-node {
+  padding: 10px;
+  border-radius: 5px;
+  background: white;
+  border: 1px solid #ddd;
+  width: 150px;
+  font-size: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.agent-node:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+  border-color: #aaa;
+}
+
+.agent-node-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.agent-node-title {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agent-node-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.agent-node-type {
+  font-size: 10px;
+  background-color: #f0f0f0;
+  padding: 2px 5px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.agent-node-config-indicator {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 10px;
+  color: #388e3c;
+}
+
+.agent-node-input {
+  background-color: #e3f2fd;
+  border-color: #bbdefb;
+}
+
+.agent-node-process {
+  background-color: #f9fbe7;
+  border-color: #f0f4c3;
+}
+
+.agent-node-output {
+  background-color: #e8f5e9;
+  border-color: #c8e6c9;
+}
+
+.agent-node-utility {
+  background-color: #fff3e0;
+  border-color: #ffe0b2;
+}
