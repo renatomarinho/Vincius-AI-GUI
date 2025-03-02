@@ -1,9 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider, BaseStyles } from '@primer/react';
-import WorkflowAgents from './pages/WorkflowAgents';
 import AgentSidebar from './components/Agents/Sidebar/AgentSidebar';
 import { ReactFlowPatchProvider } from './components/WorkflowEditor/ReactFlowPatch';
+import AppRoutes from './routes';
 
 function App() {
   return (
@@ -11,13 +11,8 @@ function App() {
       <ThemeProvider>
         <BaseStyles>
           <Router>
-            <Routes>
-              <Route path="/workflow-agents" element={<WorkflowAgents />} />
-              <Route path="/" element={<div>Home Page</div>} />
-            </Routes>
+            <AppRoutes />
           </Router>
-          
-          {/* Agent sidebar will be available globally */}
           <AgentSidebar />
         </BaseStyles>
       </ThemeProvider>
