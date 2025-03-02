@@ -15,6 +15,7 @@ import { RightSidebar } from '../Agents/Sidebar';
 import { createSafeNodes, createSafeEdges } from './WorkflowEditorUtils';
 import { setConfigureNodeHandler, registerSidebarControls, getDebugInfo } from './NodeConfigEvents';
 import styles from './WorkflowEditor.module.css';
+import { registerEdgeDeletionCallback } from './edgeUtils';
 
 const nodeTypes = {
   custom: CustomNode,
@@ -205,22 +206,40 @@ const WorkflowEditor = ({ initialNodes = [], initialEdges = [] }) => {
     };
   }, []);
   
-  // Edge deletion event listener
+  // Edge deletion event listener - improved for better debugging and reliability
   useEffect(() => {
     const handleEdgeDeleteEvent = (event) => {
       const { edgeId } = event.detail;
       if (edgeId) {
-        console.log('Deleting edge:', edgeId);
+        console.log('WorkflowEditor.js: Edge deletion event received for edge:', edgeId);
+        
         setEdges((eds) => eds.filter((e) => e.id !== edgeId));
+        
+        // If we have a selected edge with the same ID, clear the selection
+        if (selectedEdge && selectedEdge.id === edgeId) {
+          setSelectedEdge(null);
+        }
       }
     };
     
+    // Register our delete callback with the new utility
+    const unregister = registerEdgeDeletionCallback((edgeId) => {
+      console.log('WorkflowEditor.js: Edge deletion callback triggered for:', edgeId);
+      setEdges((eds) => eds.filter((e) => e.id !== edgeId));
+      
+      if (selectedEdge && selectedEdge.id === edgeId) {
+        setSelectedEdge(null);
+      }
+    });
+    
+    // Also keep the event listener for backward compatibility
     window.addEventListener('workflow-edge:delete', handleEdgeDeleteEvent);
     
     return () => {
       window.removeEventListener('workflow-edge:delete', handleEdgeDeleteEvent);
+      unregister();
     };
-  }, [setEdges]);
+  }, [setEdges, selectedEdge]);
   
   return (
     <>

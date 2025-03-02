@@ -153,24 +153,41 @@
 }
 
 .edgeDeleteButton {
-  width: 20px;
-  height: 20px;
+  width: 24px; /* Increased size */
+  height: 24px; /* Increased size */
   background-color: white;
   border: 1px solid #ff0072;
   color: #ff0072;
   border-radius: 50%;
-  font-size: 16px;
-  line-height: 1;
+  font-size: 18px; /* Increased size */
+  line-height: 0; /* Better centering */
+  font-weight: bold; /* Make X bolder */
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
+  padding: 0; /* Remove default padding */
 }
 
 .edgeDeleteButton:hover {
   background-color: #ff0072;
   color: white;
-  transform: scale(1.1);
+  transform: scale(1.2);
+}
+
+.edgeDeleteButton.deleting {
+  background-color: #ff0072;
+  color: white;
+  animation: pulse 0.5s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.2);
+  }
 }

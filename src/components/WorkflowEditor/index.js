@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { 
   ReactFlow, 
   ReactFlowProvider,
@@ -41,6 +41,32 @@ const ReactFlowComponent = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const reactFlowWrapper = useRef(null);
   const { getViewport, setViewport } = useReactFlow();
+
+  // Add edge deletion event listener
+  useEffect(() => {
+    const handleEdgeDeleteEvent = (event) => {
+      const { edgeId } = event.detail;
+      if (edgeId) {
+        console.log('Index.js: Edge deletion event received for edge:', edgeId);
+        
+        // Delete the edge
+        setEdges((eds) => {
+          console.log('Current edges:', eds);
+          const updatedEdges = eds.filter((e) => e.id !== edgeId);
+          console.log('Updated edges:', updatedEdges);
+          return updatedEdges;
+        });
+      }
+    };
+    
+    console.log('Index.js: Setting up workflow-edge:delete event listener');
+    window.addEventListener('workflow-edge:delete', handleEdgeDeleteEvent);
+    
+    return () => {
+      console.log('Index.js: Removing workflow-edge:delete event listener');
+      window.removeEventListener('workflow-edge:delete', handleEdgeDeleteEvent);
+    };
+  }, [setEdges]);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => 

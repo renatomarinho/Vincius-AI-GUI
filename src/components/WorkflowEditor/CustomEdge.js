@@ -1,6 +1,7 @@
 import React from 'react';
 import { BaseEdge, getBezierPath, EdgeLabelRenderer } from '@xyflow/react';
 import styles from './WorkflowEditor.module.css';
+import { deleteEdgeById } from './edgeUtils';
 
 const CustomEdge = ({ 
   id, 
@@ -31,20 +32,34 @@ const CustomEdge = ({
     strokeWidth: selected ? 2 : 1,
   };
 
-  // Edge delete handler - we'll use the global ReactFlow instance
+  // Edge delete handler - use the new utility function
   const onEdgeClick = (evt) => {
     evt.stopPropagation();
     
-    // Dispatch a custom event that the workflow editor can listen to
-    const event = new CustomEvent('workflow-edge:delete', { 
-      detail: { edgeId: id } 
-    });
-    window.dispatchEvent(event);
+    // Log to confirm the handler is executing
+    console.log('Delete button clicked for edge:', id);
+    
+    try {
+      // Use the utility function to delete the edge
+      deleteEdgeById(id);
+      
+      // For immediate visual feedback
+      evt.currentTarget.classList.add('deleting');
+      
+      console.log('Edge deletion requested successfully');
+    } catch (error) {
+      console.error('Error requesting edge deletion:', error);
+    }
   };
 
   return (
     <>
-      <BaseEdge path={edgePath} style={edgeStyle} markerEnd={markerEnd} />
+      <BaseEdge 
+        path={edgePath} 
+        style={edgeStyle} 
+        markerEnd={markerEnd}
+        data-edge-id={id} 
+      />
       
       {/* Invisible wider path for easier clicking */}
       <path
@@ -53,6 +68,7 @@ const CustomEdge = ({
         strokeWidth={10}
         fill="none"
         style={{ cursor: 'pointer' }}
+        data-edge-id={id}
       />
       
       {selected && (
@@ -67,12 +83,13 @@ const CustomEdge = ({
         />
       )}
       
-      {/* Delete button in the middle of the edge */}
+      {/* Delete button in the middle of the edge - make it more visible */}
       <EdgeLabelRenderer>
         <div
           className={styles.edgeButtonContainer}
           style={{
             transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
+            pointerEvents: 'all' // Ensure clicks are captured
           }}
         >
           <button 
